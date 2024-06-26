@@ -1,30 +1,30 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
-import { deleteExistingMovie } from '../features/movies/movieSlice';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import styles from './MovieDetails.module.css'; // Import the CSS module
 
 function MovieDetails() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const movie = useSelector(state => state.movies.movies.find(m => m.id === parseInt(id)));
-    const dispatch = useDispatch();
 
-    const handleDelete = () => {
-        dispatch(deleteExistingMovie(movie.id));
-        navigate('/');
-    };
+    if (!movie) {
+        return <div>Movie not found</div>;
+    }
 
     return (
-        <div>
-            <h2>{movie.title}</h2>
-            <p>{movie.description}</p>
-            <p>Release Year: {movie.release_year}</p>
-            <p>Genre: {movie.genre}</p>
-            <p>Watched: {movie.watched ? 'Yes' : 'No'}</p>
-            <p>Rating: {movie.rating}</p>
-            <p>Review: {movie.review}</p>
-            <button onClick={() => navigate(`/edit/${movie.id}`)}>Edit</button>
-            <button onClick={handleDelete}>Delete</button>
+        <div className={styles.container}> {/* Apply container style */}
+            <h1 className={styles.movieTitle}><Link to={'/'} className={styles.heading}>Movie Watchlist</Link></h1>
+            <div>
+                <h2 className={styles.movieTitle}>{movie.title}</h2>
+                {movie.image && <img className={styles.movieImage} src={movie.image} alt={movie.title} width="300" />} {/* Apply image style */}
+                <p className={styles.movieDetails}><strong>Description:</strong> {movie.description}</p>
+                <p className={styles.movieDetails}><strong>Release Year:</strong> {movie.release_year}</p>
+                <p className={styles.movieDetails}><strong>Genre:</strong> {movie.genre}</p>
+                <p className={styles.movieDetails}><strong>Watched:</strong> {movie.watched ? 'Yes' : 'No'}</p>
+                <p className={styles.movieDetails}><strong>Review:</strong> {movie.review}</p>
+                <p className={styles.movieDetails}><strong>Rating:</strong> {movie.rating}/5</p>
+            </div>
         </div>
     );
 }
